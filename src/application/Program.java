@@ -3,7 +3,10 @@ package application;
 import java.util.Locale;
 import java.util.Scanner;
 
+import DTO.PostAccountBody;
 import entities.enums.AccountType;
+import services.AccountService;
+import services.PartyService;
 
 public class Program {
 
@@ -14,6 +17,9 @@ public class Program {
 		Scanner sc = new Scanner(System.in);
 
 		boolean keepRunning = true;
+		
+		PartyService partyService = new PartyService();
+		AccountService accountService = new AccountService();
 		
 		while(keepRunning) {
 			
@@ -27,7 +33,7 @@ public class Program {
 				System.out.println("Para o cadastro da conta por favor informe");
 				
 				System.out.println("Tipo de conta: (1 para conta de pagamentos, 2 conta poupança)");
-				AccountType accountType;
+				AccountType accountType = AccountType.PAYMENTS;
 				
 				int accountTypeChoice = sc.nextInt();
 				
@@ -56,6 +62,9 @@ public class Program {
 				System.out.print("Nome do titular da conta: ");
 				String clientName = sc.nextLine();
 				
+				
+				int partyId = partyService.postParty(clientName);
+				
 				System.out.print("Numero da conta: ");
 				int accountNumber = sc.nextInt();
 				
@@ -68,11 +77,18 @@ public class Program {
 				System.out.print("Limite da conta: ");
 				double accountLimit = sc.nextDouble();
 				
+				
+				
+				PostAccountBody postAccountBody = new PostAccountBody(accountNumber, branchNumber, firstDeposit, partyId, accountLimit, accountType);
+				
+				int accountId = accountService.postAccount(postAccountBody);
+				
 				UI.success();
 				
 				break;
 			case 2:
 				// code block
+				break;
 			case 3:
 				// code block
 				break;

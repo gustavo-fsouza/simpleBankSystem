@@ -17,14 +17,13 @@ public class PartyService implements PartyServiceInterface {
 	@Override
 	public int postParty(String name) {
 		int partyId = 1;
-		if (parties.isEmpty()) {
-			Party newParty = new Party(name, partyId);
-			parties.put(partyId, newParty);
-		} else {
+		
+		if (!parties.isEmpty()) {
 			partyId = parties.size() + 1;
-			Party newParty = new Party(name, partyId);
-			parties.put(partyId, newParty);
 		}
+		
+		Party newParty = new Party(name, partyId);
+		parties.put(partyId, newParty);
 		return partyId;
 	}
 

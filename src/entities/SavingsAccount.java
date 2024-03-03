@@ -8,6 +8,13 @@ public class SavingsAccount extends Account {
 			Integer partyId, Double accountLimit, AccountType accountType) {
 		super(accountId, accountNumber, branchNumber, accountBalance, partyId, accountLimit, accountType);
 	}
-	
-	
+
+	@Override
+	public void withdraw(double amount) {
+		if (getAccountBalance() <= amount) {
+			System.out.println("Saldo insuficiente!");
+		} else {
+			accountBalance = getAccountBalance() - amount;
+		}
+	}
 }

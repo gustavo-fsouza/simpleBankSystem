@@ -4,7 +4,9 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import DTO.PostAccountBody;
+import entities.Account;
 import entities.enums.AccountType;
+import entities.exceptions.BusinessException;
 import services.AccountService;
 import services.PartyService;
 
@@ -83,11 +85,34 @@ public class Program {
 				
 				int accountId = accountService.postAccount(postAccountBody);
 				
+				System.out.println("Id de usuario gerado: " + partyId);
+				System.out.println("Id de conta gerado: " + accountId);
+				
 				UI.success();
 				
 				break;
 			case 2:
-				// code block
+				System.out.print("Informe o id da conta onde será feito o deposito:");
+				accountId = sc.nextInt();
+				
+				try {
+					Account accountToDeposit = accountService.getAccount(accountId);
+					
+					System.out.print("Informe o valor a ser depositado: ");
+					double depositAmount = sc.nextDouble();
+					
+					
+					
+					accountToDeposit.deposit(depositAmount);
+					
+					UI.success();
+				}
+				catch (BusinessException e) {
+					System.out.println(e.getMessage());
+				}
+				
+				
+				
 				break;
 			case 3:
 				// code block

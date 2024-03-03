@@ -15,7 +15,6 @@ public abstract class Account {
 
 	public Account(Integer accountId, Integer accountNumber, Integer branchNumber, Double accountBalance,
 			Integer partyId, Double accountLimit, AccountType accountType) {
-		super();
 		this.accountId = accountId;
 		this.accountNumber = accountNumber;
 		this.branchNumber = branchNumber;
@@ -56,4 +55,10 @@ public abstract class Account {
 	public AccountType getAccountType() {
 		return accountType;
 	}
+	
+	public void deposit(double amount) {
+		accountBalance = getAccountBalance() + amount;
+	};
+	
+	public abstract void withdraw(double amount);
 }

@@ -9,6 +9,13 @@ public class PaymentsAccount extends Account {
 		super(accountId, accountNumber, branchNumber, accountBalance, partyId, accountLimit, accountType);
 	}
 
-	
+	@Override
+	public void withdraw(double amount) {
+		if (getAccountBalance() + getAccountLimit() < amount ) {
+			System.out.println("Limite infusifiencte para saque!");
+		} else {
+			accountBalance = getAccountBalance() - amount;
+		}
+	}
 
 }

@@ -8,6 +8,7 @@ import entities.Account;
 import entities.PaymentsAccount;
 import entities.SavingsAccount;
 import entities.enums.AccountType;
+import entities.exceptions.BusinessException;
 
 public class AccountService implements AccountServiceInterface {
 	
@@ -28,6 +29,12 @@ public class AccountService implements AccountServiceInterface {
 
 	@Override
 	public Account getAccount(int accountId) {
+		if (accounts.isEmpty()) {
+			throw new BusinessException("Nenhuma conta cadastrada no sistema",1);
+		}
+		else if (!accounts.containsKey(accountId)) {
+			throw new BusinessException("A conta informada não existe",2);
+		}
 		return accounts.get(accountId);
 	}
 	

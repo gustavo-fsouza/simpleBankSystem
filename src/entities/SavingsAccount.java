@@ -1,6 +1,8 @@
 package entities;
 
 import entities.enums.AccountType;
+import entities.exceptions.BusinessException;
+import entities.exceptions.Errors;
 
 public class SavingsAccount extends Account {
 
@@ -12,7 +14,7 @@ public class SavingsAccount extends Account {
 	@Override
 	public void withdraw(double amount) {
 		if (getAccountBalance() <= amount) {
-			System.out.println("Saldo insuficiente!");
+			throw new BusinessException(Errors.INSUFFICIENT_BALANCE.getErrorMessage(),Errors.INSUFFICIENT_BALANCE.getErrorCode());
 		} else {
 			accountBalance = getAccountBalance() - amount;
 		}

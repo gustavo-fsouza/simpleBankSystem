@@ -3,21 +3,23 @@ package DTO;
 import entities.enums.AccountType;
 
 public class PostAccountBody {
-	Integer accountNumber;
-	Integer branchNumber;
-	Double accountBalance;
-	Integer partyId;
-	Double accountLimit;
-	AccountType accountType;
+	private Integer accountNumber;
+	private Integer branchNumber;
+	private Double accountBalance;
+	private Integer partyId;
+	private Double accountLimit;
+	private AccountType accountType;
+	private boolean hasLimit;
 	
 	public PostAccountBody(Integer accountNumber, Integer branchNumber, Double accountBalance, Integer partyId,
-			Double accountLimit, AccountType accountType) {
+			Double accountLimit, AccountType accountType, boolean hasLimit) {
 		this.accountNumber = accountNumber;
 		this.branchNumber = branchNumber;
 		this.accountBalance = accountBalance;
 		this.partyId = partyId;
 		this.accountLimit = accountLimit;
 		this.accountType = accountType;
+		this.hasLimit = hasLimit;
 	}
 
 	public Integer getPartyId() {
@@ -48,6 +50,9 @@ public class PostAccountBody {
 		return accountType;
 	}
 	
+	public boolean getHasLimit() {
+		return hasLimit;
+	}
 	
 }
 

@@ -9,6 +9,7 @@ import entities.PaymentsAccount;
 import entities.SavingsAccount;
 import entities.enums.AccountType;
 import entities.exceptions.BusinessException;
+import entities.exceptions.Errors;
 
 public class AccountService implements AccountServiceInterface {
 	
@@ -30,10 +31,10 @@ public class AccountService implements AccountServiceInterface {
 	@Override
 	public Account getAccount(int accountId) {
 		if (accounts.isEmpty()) {
-			throw new BusinessException("Nenhuma conta cadastrada no sistema",1);
+			throw new BusinessException(Errors.NO_ACCOUNT_REGISTERED.getErrorMessage(),Errors.NO_ACCOUNT_REGISTERED.getErrorCode());
 		}
 		else if (!accounts.containsKey(accountId)) {
-			throw new BusinessException("A conta informada não existe",2);
+			throw new BusinessException(Errors.ACCOUNT_NOT_FOUND.getErrorMessage(),Errors.ACCOUNT_NOT_FOUND.getErrorCode());
 		}
 		return accounts.get(accountId);
 	}
@@ -57,7 +58,8 @@ public class AccountService implements AccountServiceInterface {
 				body.getAccountBalance(),
 				body.getPartyId(), 
 				body.getAccountLimit(), 
-				body.getAccountType()
+				body.getAccountType(),
+				body.getHasLimit()
 				);
 	}
 	

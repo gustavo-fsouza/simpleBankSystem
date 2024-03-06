@@ -8,7 +8,8 @@ public enum Errors {
 		NOT_ENOUGH_LIMIT(4, "Limite insuficiente para saque!"),
 		NO_LIMIT(5, "A conta não possui limite"),
 		NO_TRANSACTION_REGISTERED(6, "Nenhuma transação registrada"),
-		TRANSACTION_NOT_FOUND(7, "Transação não encontrada");
+		TRANSACTION_NOT_FOUND(7, "Transação não encontrada"),
+		FORBIDDEN_DESTINATION_BANK(8, "No momento apenas são permitidas transferências internas entre contas");
 	
 	
 	    private String errorMessage;

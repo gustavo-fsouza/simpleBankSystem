@@ -1,11 +1,16 @@
 package application;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Scanner;
 
 import DTO.PostAccountBody;
+import DTO.PostTransactionBody;
 import entities.Account;
 import entities.enums.AccountType;
+import entities.enums.BankNumbers;
+import entities.enums.TransactionType;
 import entities.exceptions.BusinessException;
 import services.AccountService;
 import services.PartyService;
@@ -23,7 +28,7 @@ public class Program {
 
 		PartyService partyService = new PartyService();
 		AccountService accountService = new AccountService();
-		TransactionService transactionService = new TransactionService();
+		TransactionService transactionService = new TransactionService(accountService);
 
 		while (keepRunning) {
 
@@ -174,15 +179,60 @@ public class Program {
 				}
 
 			case 5:
-				// code block
+				UI.clearScreen();
+
+				System.out.print("Informe o id da conta de onde será feita a transação: ");
+				accountId = sc.nextInt();
+
+				try {
+					Account accountToTransferFrom = accountService.getAccount(accountId);
+					
+					System.out.print("Saldo atual da conta: ");
+					System.out.println(String.format("%.2f", accountToTransferFrom.getAccountBalance()));
+					
+					System.out.print("Informe o valor a ser transferido: ");
+					double transferAmount = sc.nextDouble();
+					
+					LocalDateTime transactionDateTime = LocalDateTime.now();
+					
+					System.out.print("Informe o numero da conta destino: ");
+					int destinationAccountNumber = sc.nextInt();
+					
+					System.out.print("Informe o numero da agencia da conta destino: ");
+					int destinationBranchNumber	= sc.nextInt();
+					
+					PostTransactionBody transactionBody = new PostTransactionBody(accountId, transactionDateTime, transferAmount, destinationAccountNumber, destinationBranchNumber, BankNumbers.DEFAULT_BANK_NUMBER.getBankNumber(), TransactionType.INTERNAL_TRANSFER);
+					
+					transactionService.postTransaction(transactionBody);
+					
+					System.out.print("Saldo atual da conta: ");
+					System.out.println(String.format("%.2f", accountToTransferFrom.getAccountBalance()));
+
+					UI.success();
+					
+				} catch (BusinessException e) {
+					System.out.println(e.getMessage());
+				}
 				break;
 			case 6:
-				// code block
+				UI.clearScreen();
+
+				System.out.print("Informe o id da conta de onde será exportado o historico de transferencias: ");
+				accountId = sc.nextInt();
+
+				try {
+					transactionService.postExportTransactionHistory(accountId);
+					
+					UI.success();
+					
+				} catch (BusinessException e) {
+					System.out.println(e.getMessage());
+				} 
 				break;
 			case 7:
 				keepRunning = false;
 			default:
-				// code block
+				System.out.println("Selecione uma opção válida");
 			}
 
 		}

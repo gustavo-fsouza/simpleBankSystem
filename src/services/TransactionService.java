@@ -1,5 +1,8 @@
 package services;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +10,8 @@ import java.util.Map;
 
 import DTO.PostTransactionBody;
 import entities.Transaction;
+import entities.enums.BankNumbers;
+import entities.enums.TransactionType;
 import entities.exceptions.BusinessException;
 import entities.exceptions.Errors;
 
@@ -14,7 +19,15 @@ public class TransactionService implements TransactionServiceInterface {
 
 	private Map<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
 	private Map<Integer, List<Transaction>> accountTransactions = new HashMap<Integer, List<Transaction>>();
-
+	
+	private AccountService accountService;
+	
+	private final String writePath = ".//src//exportedTransactions//exportedTransactions.csv";
+	
+	public TransactionService(AccountService accountService) {
+		this.accountService = accountService;
+	}
+	
 	@Override
 	public Transaction getTransaction(int transactionId) {
 		if (transactions.isEmpty()) {
@@ -33,19 +46,29 @@ public class TransactionService implements TransactionServiceInterface {
 
 	@Override
 	public int postTransaction(PostTransactionBody body) {
+		if (body.getTransactionType() == TransactionType.INTERNAL_TRANSFER 
+				&& (body.getDestinationBankNumber() != BankNumbers.DEFAULT_BANK_NUMBER.getBankNumber())) {
+			throw new BusinessException(Errors.FORBIDDEN_DESTINATION_BANK.getErrorMessage(),
+					Errors.FORBIDDEN_DESTINATION_BANK.getErrorCode());
+		}
+		
 		int transactionId = 1;
 
 		if (!transactions.isEmpty()) {
 			transactionId = transactions.size() + 1;
 		}
-
+		
 		Transaction newTransaction = new Transaction(transactionId, body.getAccountId(), body.getTransactionDateTime(),
 				body.getAmount(), body.getDestinationAcountNumber(), body.getDestinationBranchNumber(),
-				body.getDestinationBankNumber(), body.getTransactionType());
+				body.getTransactionType());
 		
 		transactions.put(transactionId, newTransaction);
 
 		postRelateTransactionToAccount(newTransaction);
+		
+		if (body.getTransactionType() == TransactionType.INTERNAL_TRANSFER) {
+			accountService.getAccount(body.getAccountId()).withdraw(body.getAmount());;
+		}
 
 		return transactionId;
 	}
@@ -70,8 +93,24 @@ public class TransactionService implements TransactionServiceInterface {
 	}
 
 	@Override
-	public void exportTransactionHistory() {
-		// TODO Auto-generated method stub
+	public void postExportTransactionHistory(int accountId) {
+		
+		
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(writePath))){
+			List<Transaction> transactionsToExport = getAccountTransactions(accountId);
+			
+			for (Transaction transaction : transactionsToExport) {
+				bw.write(transaction.toString());
+				
+				bw.newLine();
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (BusinessException e) {
+			System.out.println(e.getMessage());
+		}
 
 	}
 

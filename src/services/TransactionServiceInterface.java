@@ -10,5 +10,5 @@ public interface TransactionServiceInterface {
 	public int postTransaction(PostTransactionBody body);
 	public List<Transaction> getAccountTransactions(int accountId);
 	public void postRelateTransactionToAccount(Transaction transaction);
-	public void exportTransactionHistory();
+	public void postExportTransactionHistory(int accountId);
 }

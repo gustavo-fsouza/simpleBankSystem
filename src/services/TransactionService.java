@@ -99,6 +99,11 @@ public class TransactionService implements TransactionServiceInterface {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(writePath))){
 			List<Transaction> transactionsToExport = getAccountTransactions(accountId);
 			
+			String columnNames = "data,valor,conta destino,agencia destino,banco destino,tipo de transferencia";
+			
+			bw.write(columnNames);
+			bw.newLine();
+			
 			for (Transaction transaction : transactionsToExport) {
 				bw.write(transaction.toString());
 				

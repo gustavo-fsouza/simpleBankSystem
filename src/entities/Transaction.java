@@ -65,9 +65,9 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return "data=" + transactionDateTime + ",valor=" + amount
-				+ ",conta destino=" + destinationAcountNumber + ",agencia destino="
-				+ destinationBranchNumber + ",banco destino=" + destinationBankNumber + ",tipo de transferencia="
+		return transactionDateTime + "," +  String.format("%.2f", amount)
+				+ "," + destinationAcountNumber + ","
+				+ destinationBranchNumber + "," + destinationBankNumber + ","
 				+ transactionType;
 	}
 	

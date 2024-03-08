@@ -3,6 +3,7 @@ package services;
 import java.util.HashMap;
 import java.util.Map;
 
+import DTO.PostPartyBody;
 import entities.Party;
 
 public class PartyService implements PartyServiceInterface {
@@ -15,14 +16,14 @@ public class PartyService implements PartyServiceInterface {
 	}
 
 	@Override
-	public int postParty(String name) {
+	public int postParty(PostPartyBody body) {
 		int partyId = 1;
 		
 		if (!parties.isEmpty()) {
 			partyId = parties.size() + 1;
 		}
 		
-		Party newParty = new Party(name, partyId);
+		Party newParty = new Party(body.getName(), partyId, body.getDocumentNumber());
 		parties.put(partyId, newParty);
 		return partyId;
 	}

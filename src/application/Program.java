@@ -1,11 +1,11 @@
 package application;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Scanner;
 
 import DTO.PostAccountBody;
+import DTO.PostPartyBody;
 import DTO.PostTransactionBody;
 import entities.Account;
 import entities.enums.AccountType;
@@ -35,13 +35,14 @@ public class Program {
 			UI.printInitialMenu();
 
 			int selectedOption = sc.nextInt();
+			
 
 			switch (selectedOption) {
 			case 1:
 				UI.clearScreen();
 				System.out.println("Para o cadastro da conta por favor informe");
 
-				System.out.println("Tipo de conta: (1 para conta de pagamentos, 2 conta poupança)");
+				System.out.println("Tipo de conta: (1 para conta de pagamentos, 2 conta poupanca)");
 				AccountType accountType = AccountType.PAYMENTS;
 
 				int accountTypeChoice = sc.nextInt();
@@ -58,7 +59,7 @@ public class Program {
 						selectedAccount = true;
 					} else {
 						System.out.println("Digite um dos valores mostrados na tela");
-						System.out.println("Tipo de conta: (1 para pagamentos, 2 conta poupança)");
+						System.out.println("Tipo de conta: (1 para pagamentos, 2 conta poupanca)");
 						accountTypeChoice = sc.nextInt();
 					}
 
@@ -68,13 +69,18 @@ public class Program {
 
 				System.out.print("Nome do titular da conta: ");
 				String clientName = sc.nextLine();
+				
+				System.out.print("Numero do CPF (apenas numeros): ");
+				String documentNumber = sc.next();
+				
+				PostPartyBody partyBody = new PostPartyBody(clientName, documentNumber);
 
-				int partyId = partyService.postParty(clientName);
+				int partyId = partyService.postParty(partyBody);
 
 				System.out.print("Numero da conta: ");
 				int accountNumber = sc.nextInt();
 
-				System.out.print("Numero da agência: ");
+				System.out.print("Numero da agencia: ");
 				int branchNumber = sc.nextInt();
 
 				System.out.print("Deposito inicial: ");
@@ -103,7 +109,7 @@ public class Program {
 			case 2:
 				UI.clearScreen();
 
-				System.out.print("Informe o id da conta onde será feito o deposito: ");
+				System.out.print("Informe o id da conta onde sera feito o deposito: ");
 				accountId = sc.nextInt();
 
 				try {
@@ -129,7 +135,7 @@ public class Program {
 			case 3:
 				UI.clearScreen();
 
-				System.out.print("Informe o id da conta de onde será feito o saque: ");
+				System.out.print("Informe o id da conta de onde sera feito o saque: ");
 				accountId = sc.nextInt();
 
 				try {
@@ -155,7 +161,7 @@ public class Program {
 
 				UI.clearScreen();
 
-				System.out.print("Informe o id da conta de onde será feita a alteração do limite: ");
+				System.out.print("Informe o id da conta de onde sera feita a alteracao do limite: ");
 				accountId = sc.nextInt();
 
 				try {
@@ -177,11 +183,12 @@ public class Program {
 				} catch (BusinessException e) {
 					System.out.println(e.getMessage());
 				}
-
+				
+				break;
 			case 5:
 				UI.clearScreen();
 
-				System.out.print("Informe o id da conta de onde será feita a transação: ");
+				System.out.print("Informe o id da conta de onde sera feita a transacao: ");
 				accountId = sc.nextInt();
 
 				try {
@@ -217,7 +224,7 @@ public class Program {
 			case 6:
 				UI.clearScreen();
 
-				System.out.print("Informe o id da conta de onde será exportado o historico de transferencias: ");
+				System.out.print("Informe o id da conta de onde sera exportado o historico de transferencias: ");
 				accountId = sc.nextInt();
 
 				try {
@@ -227,12 +234,17 @@ public class Program {
 					
 				} catch (BusinessException e) {
 					System.out.println(e.getMessage());
+					UI.fail();
 				} 
 				break;
 			case 7:
+				
 				keepRunning = false;
+				
+				break;
 			default:
-				System.out.println("Selecione uma opção válida");
+				UI.clearScreen();
+				System.out.println("Selecione uma opcao valida");
 			}
 
 		}

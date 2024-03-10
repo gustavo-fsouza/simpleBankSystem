@@ -27,7 +27,7 @@ public class Program {
 		boolean keepRunning = true;
 
 		PartyService partyService = new PartyService();
-		AccountService accountService = new AccountService();
+		AccountService accountService = new AccountService(partyService);
 		TransactionService transactionService = new TransactionService(accountService);
 
 		while (keepRunning) {
@@ -80,9 +80,6 @@ public class Program {
 				System.out.print("Numero da conta: ");
 				int accountNumber = sc.nextInt();
 
-				System.out.print("Numero da agencia: ");
-				int branchNumber = sc.nextInt();
-
 				System.out.print("Deposito inicial: ");
 				double firstDeposit = sc.nextDouble();
 				
@@ -90,17 +87,22 @@ public class Program {
 				boolean hasLimit = false;
 				
 				if (accountType == AccountType.PAYMENTS) {
-					System.out.print("Limite da conta: ");
-					accountLimit = sc.nextDouble();
-					hasLimit = true;
+					System.out.print("Deseja limite?: (s/n)");
+					char s = sc.next().charAt(0);
+					if (s == 's') {
+						System.out.print("Limite da conta: ");
+						accountLimit = sc.nextDouble();
+						hasLimit = true;
+					}
+		
+					
 				}
 
-				PostAccountBody postAccountBody = new PostAccountBody(accountNumber, branchNumber, firstDeposit,
+				PostAccountBody postAccountBody = new PostAccountBody(accountNumber, accountService.getDefaultBranchNumber(), firstDeposit,
 						partyId, accountLimit, accountType, hasLimit);
 
 				int accountId = accountService.postAccount(postAccountBody);
 
-				System.out.println("Id de usuario gerado: " + partyId);
 				System.out.println("Id de conta gerado: " + accountId);
 
 				UI.success();

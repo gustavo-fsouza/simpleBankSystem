@@ -1,10 +1,13 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import DTO.PostAccountBody;
 import entities.Account;
+import entities.Party;
 import entities.PaymentsAccount;
 import entities.SavingsAccount;
 import entities.enums.AccountType;
@@ -14,7 +17,15 @@ import entities.exceptions.Errors;
 public class AccountService implements AccountServiceInterface {
 	
 	private Map<Integer, Account> accounts = new HashMap<>();
-
+	private Map<Integer, List<Party>> accountParties = new HashMap<Integer, List<Party>>();
+	private final int DEFAULT_BRANCH_NUMBER = 1;
+	
+	private PartyService partyService;
+	
+	public AccountService(PartyService partyService) {
+		this.partyService = partyService;
+	}
+	
 	@Override
 	public int postAccount(PostAccountBody body) {
 		int accountId = 1;
@@ -25,6 +36,9 @@ public class AccountService implements AccountServiceInterface {
 		
 		Account newAccount = accountsConstructorChoicer(body, accountId);
 		accounts.put(accountId, newAccount);
+		
+		postRelatePartyToAccount(newAccount);
+		
 		return accountId;
 	}
 
@@ -73,6 +87,48 @@ public class AccountService implements AccountServiceInterface {
 				body.getAccountLimit(), 
 				body.getAccountType()
 				);
+	}
+	
+	public int getDefaultBranchNumber() {
+		return DEFAULT_BRANCH_NUMBER;
+	}
+
+	@Override
+	public void postRelatePartyToAccount(Account account) {
+		List<Party> parties = new ArrayList<>();
+
+		try {
+			
+			parties = getAccountParties(account.getAccountId());
+			
+			parties.add(partyService.getParty(account.getPartyId()));
+			
+			accountParties.put(account.getAccountId(), parties);
+			
+		} catch (BusinessException e) {
+			
+			if (e.getErrorCode() == Errors.NO_PARTY_REGISTERED.getErrorCode()) {
+				parties.add(partyService.getParty(account.getPartyId()));
+				accountParties.put(account.getPartyId(), parties);
+			}
+		}
+		
+	}
+
+	@Override
+	public List<Party> getAccountParties(int accountId) {
+		if (accountParties.isEmpty()) {
+			
+			throw new BusinessException(Errors.NO_PARTY_REGISTERED.getErrorMessage(),
+					Errors.NO_PARTY_REGISTERED.getErrorCode());
+			
+		} else if (!accountParties.containsKey(accountId)) {
+			
+			throw new BusinessException(Errors.NO_PARTY_REGISTERED.getErrorMessage(),
+					Errors.NO_PARTY_REGISTERED.getErrorCode());
+			
+		}
+		return accountParties.get(accountId);
 	}
 	
 }

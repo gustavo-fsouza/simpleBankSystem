@@ -14,6 +14,4 @@ private int errorCode;
 		return errorCode;
 	}
 	
-	
-	
 }

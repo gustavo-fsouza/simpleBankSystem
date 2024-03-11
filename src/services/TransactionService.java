@@ -24,6 +24,8 @@ public class TransactionService implements TransactionServiceInterface {
 	
 	private final String writePath = ".//src//exportedTransactions//exportedTransactions.csv";
 	
+	
+	
 	public TransactionService(AccountService accountService) {
 		this.accountService = accountService;
 	}
@@ -50,6 +52,11 @@ public class TransactionService implements TransactionServiceInterface {
 				&& (body.getDestinationBankNumber() != BankNumbers.DEFAULT_BANK_NUMBER.getBankNumber())) {
 			throw new BusinessException(Errors.FORBIDDEN_DESTINATION_BANK.getErrorMessage(),
 					Errors.FORBIDDEN_DESTINATION_BANK.getErrorCode());
+		}
+		if (body.getAmount() > accountService.getTransferAmountLimit() 
+				&& body.getTransactionDateTime().getHour() >= accountService.getTransferTimeLimit().getHour()) {
+			throw new BusinessException(Errors.TRANSFER_TIME_LIMIT.getErrorMessage(),
+					Errors.TRANSFER_TIME_LIMIT.getErrorCode());
 		}
 		
 		int transactionId = 1;

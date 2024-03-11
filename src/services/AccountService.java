@@ -1,5 +1,6 @@
 package services;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +18,11 @@ import entities.exceptions.Errors;
 public class AccountService implements AccountServiceInterface {
 	
 	private Map<Integer, Account> accounts = new HashMap<>();
+	private Map<String, Account> accountsByNumber = new HashMap<>();
 	private Map<Integer, List<Party>> accountParties = new HashMap<Integer, List<Party>>();
 	private final int DEFAULT_BRANCH_NUMBER = 1;
+	private double TRANSFER_AMOUNT_LIMIT = 1000.00;
+	private LocalTime TRANSFER_TIMELIMIT = LocalTime.parse("22:00:00");
 	
 	private PartyService partyService;
 	
@@ -38,6 +42,7 @@ public class AccountService implements AccountServiceInterface {
 		accounts.put(accountId, newAccount);
 		
 		postRelatePartyToAccount(newAccount);
+		postRelateAccoundIdAndNumber(newAccount);
 		
 		return accountId;
 	}
@@ -92,6 +97,14 @@ public class AccountService implements AccountServiceInterface {
 	public int getDefaultBranchNumber() {
 		return DEFAULT_BRANCH_NUMBER;
 	}
+	
+	public double getTransferAmountLimit() {
+		return TRANSFER_AMOUNT_LIMIT;
+	}
+	
+	public LocalTime getTransferTimeLimit() {
+		return TRANSFER_TIMELIMIT;
+	}
 
 	@Override
 	public void postRelatePartyToAccount(Account account) {
@@ -130,5 +143,51 @@ public class AccountService implements AccountServiceInterface {
 		}
 		return accountParties.get(accountId);
 	}
+
+	@Override
+	public Account getAccountByAccountAndBranchNumber(String accountAndBranchNumber) {
+		if (accountsByNumber.isEmpty()) {
+			
+			throw new BusinessException(Errors.NO_ACCOUNT_REGISTERED.getErrorMessage(),
+					Errors.NO_ACCOUNT_REGISTERED.getErrorCode());
+			
+		} else if (!accountsByNumber.containsKey(accountAndBranchNumber)) {
+			
+			throw new BusinessException(Errors.ACCOUNT_NOT_FOUND.getErrorMessage(),
+					Errors.ACCOUNT_NOT_FOUND.getErrorCode());
+			
+		}
+		return accountsByNumber.get(accountAndBranchNumber);
+	}
 	
+	@Override
+	public void postRelateAccoundIdAndNumber(Account account) {
+		List<Account> accounts = new ArrayList<>();
+
+		String accountAndBranchNumber = account.getAccountNumber().toString() + account.getBranchNumber().toString();
+		
+		try {	
+			
+			getAccountByAccountAndBranchNumber(accountAndBranchNumber);
+			
+			accounts.add(account);
+			
+			
+			accountsByNumber.put(accountAndBranchNumber, account);
+			
+		} catch (BusinessException e) {
+			
+			if(accountExists(account)) {
+				accounts.add(account);
+
+				accountsByNumber.put(accountAndBranchNumber, account);
+			}
+			
+			
+		}
+	}
+	
+	public boolean accountExists(Account account) {
+		return getAccount(account.getAccountId()) instanceof Account;
+	}
 }

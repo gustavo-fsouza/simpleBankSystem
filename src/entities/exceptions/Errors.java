@@ -10,7 +10,8 @@ public enum Errors {
 		NO_TRANSACTION_REGISTERED(6, "Nenhuma transacao registrada"),
 		TRANSACTION_NOT_FOUND(7, "Transacao nao encontrada"),
 		FORBIDDEN_DESTINATION_BANK(8, "No momento apenas sao permitidas transferencias internas entre contas"),
-		NO_PARTY_REGISTERED(9,"Nenhuma pessoa registrada");
+		NO_PARTY_REGISTERED(9,"Nenhuma pessoa registrada"),
+		TRANSFER_TIME_LIMIT(10,"Valor nao permitido para esse horario");
 	
 	
 	    private String errorMessage;

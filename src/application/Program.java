@@ -102,8 +102,10 @@ public class Program {
 						partyId, accountLimit, accountType, hasLimit);
 
 				int accountId = accountService.postAccount(postAccountBody);
-
-				System.out.println("Id de conta gerado: " + accountId);
+				
+				System.out.println();
+				System.out.println("numero de conta gerado: " + accountNumber);
+				System.out.println("numero de agencia gerado: " + postAccountBody.getBranchNumber());
 
 				UI.success();
 
@@ -111,11 +113,18 @@ public class Program {
 			case 2:
 				UI.clearScreen();
 
-				System.out.print("Informe o id da conta onde sera feito o deposito: ");
-				accountId = sc.nextInt();
+				System.out.print("Informe o numero da conta onde sera feito o deposito: ");
+				Integer depositAccountNumber = sc.nextInt();
+				
+				System.out.print("Informe o numero da agencia onde sera feito o deposito: ");
+				Integer depositBranchNumber = sc.nextInt();
+				
+				String accountAndBranchNumber = depositAccountNumber.toString() + depositBranchNumber.toString();
+				
 
 				try {
-					Account accountToDeposit = accountService.getAccount(accountId);
+					
+					Account accountToDeposit = accountService.getAccountByAccountAndBranchNumber(accountAndBranchNumber);
 					
 					System.out.print("Saldo atual: ");
 					System.out.println(String.format("%.2f", accountToDeposit.getAccountBalance()));
@@ -136,12 +145,18 @@ public class Program {
 				break;
 			case 3:
 				UI.clearScreen();
+				
+				System.out.print("Informe o numero da conta onde sera feito o saque: ");
+				Integer withdrawAccountNumber = sc.nextInt();
+				
+				System.out.print("Informe o numero da agencia onde sera feito o saque: ");
+				Integer withdrawBranchNumber = sc.nextInt();
+				
+				String wAccountAndBranchNumber = withdrawAccountNumber.toString() + withdrawBranchNumber.toString();
 
-				System.out.print("Informe o id da conta de onde sera feito o saque: ");
-				accountId = sc.nextInt();
 
 				try {
-					Account accountToWithdraw = accountService.getAccount(accountId);
+					Account accountToWithdraw = accountService.getAccountByAccountAndBranchNumber(wAccountAndBranchNumber);
 					
 					System.out.print("Saldo atual: ");
 					System.out.println(String.format("%.2f", accountToWithdraw.getAccountBalance()));
@@ -162,12 +177,17 @@ public class Program {
 			case 4:
 
 				UI.clearScreen();
-
-				System.out.print("Informe o id da conta de onde sera feita a alteracao do limite: ");
-				accountId = sc.nextInt();
+				
+				System.out.print("Informe o numero da conta onde sera feita a alteracao do limite: ");
+				Integer limitAccountNumber = sc.nextInt();
+				
+				System.out.print("Informe o numero da agencia onde sera feita a alteracao do limite: ");
+				Integer limitBranchNumber = sc.nextInt();
+				
+				String lAccountAndBranchNumber = limitAccountNumber.toString() + limitBranchNumber.toString();
 
 				try {
-					Account accountToChangeLimit = accountService.getAccount(accountId);
+					Account accountToChangeLimit = accountService.getAccountByAccountAndBranchNumber(lAccountAndBranchNumber);
 					
 					System.out.print("Limite atual da conta: ");
 					System.out.println(String.format("%.2f", accountToChangeLimit.getAccountLimit()));
@@ -190,11 +210,17 @@ public class Program {
 			case 5:
 				UI.clearScreen();
 
-				System.out.print("Informe o id da conta de onde sera feita a transacao: ");
-				accountId = sc.nextInt();
+				System.out.print("Informe o numero da conta de onde sera feita a transacao: ");
+				Integer trasnferAccountNumber = sc.nextInt();
+				
+				System.out.print("Informe o numero da agencia de onde sera feita a transacao: ");
+				Integer trasnferBranchNumber = sc.nextInt();
+				
+				String tAccountAndBranchNumber = trasnferAccountNumber.toString() + trasnferBranchNumber.toString();
+				
 
 				try {
-					Account accountToTransferFrom = accountService.getAccount(accountId);
+					Account accountToTransferFrom = accountService.getAccountByAccountAndBranchNumber(tAccountAndBranchNumber);
 					
 					System.out.print("Saldo atual da conta: ");
 					System.out.println(String.format("%.2f", accountToTransferFrom.getAccountBalance()));
@@ -210,7 +236,7 @@ public class Program {
 					System.out.print("Informe o numero da agencia da conta destino: ");
 					int destinationBranchNumber	= sc.nextInt();
 					
-					PostTransactionBody transactionBody = new PostTransactionBody(accountId, transactionDateTime, transferAmount, destinationAccountNumber, destinationBranchNumber, BankNumbers.DEFAULT_BANK_NUMBER.getBankNumber(), TransactionType.INTERNAL_TRANSFER);
+					PostTransactionBody transactionBody = new PostTransactionBody(accountToTransferFrom.getAccountId(), transactionDateTime, transferAmount, destinationAccountNumber, destinationBranchNumber, BankNumbers.DEFAULT_BANK_NUMBER.getBankNumber(), TransactionType.INTERNAL_TRANSFER);
 					
 					transactionService.postTransaction(transactionBody);
 					
@@ -225,12 +251,21 @@ public class Program {
 				break;
 			case 6:
 				UI.clearScreen();
+				
+				System.out.print("Informe o numero da conta de onde sera exportado o historico de transferencias: ");
+				Integer historyAccountNumber = sc.nextInt();
+				
+				System.out.print("Informe o numero da agencia de onde sera exportado o historico de transferencias: ");
+				Integer historyBranchNumber = sc.nextInt();
+				
+				String hAccountAndBranchNumber = historyAccountNumber.toString() + historyBranchNumber.toString();
 
-				System.out.print("Informe o id da conta de onde sera exportado o historico de transferencias: ");
-				accountId = sc.nextInt();
 
 				try {
-					transactionService.postExportTransactionHistory(accountId);
+					
+					Account accountToExport = accountService.getAccountByAccountAndBranchNumber(hAccountAndBranchNumber);
+					
+					transactionService.postExportTransactionHistory(accountToExport.getAccountId());
 					
 					UI.success();
 					

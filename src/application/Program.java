@@ -40,68 +40,68 @@ public class Program {
 			switch (selectedOption) {
 			case 1:
 				UI.clearScreen();
-				System.out.println("Para o cadastro da conta por favor informe");
-
-				System.out.println("Tipo de conta: (1 para conta de pagamentos, 2 conta poupanca)");
-				AccountType accountType = AccountType.PAYMENTS;
-
-				int accountTypeChoice = sc.nextInt();
-
-				boolean selectedAccount = false;
-
-				while (!selectedAccount) {
-
-					if (accountTypeChoice == 1) {
-						accountType = AccountType.PAYMENTS;
-						selectedAccount = true;
-					} else if (accountTypeChoice == 2) {
-						accountType = AccountType.SAVINGS;
-						selectedAccount = true;
-					} else {
-						System.out.println("Digite um dos valores mostrados na tela");
-						System.out.println("Tipo de conta: (1 para pagamentos, 2 conta poupanca)");
-						accountTypeChoice = sc.nextInt();
-					}
-
-				}
-
-				sc.nextLine();
-
-				System.out.print("Nome do titular da conta: ");
-				String clientName = sc.nextLine();
-				
-				System.out.print("Numero do CPF (apenas numeros): ");
-				String documentNumber = sc.next();
-				
-				PostPartyBody partyBody = new PostPartyBody(clientName, documentNumber);
-
-				int partyId = partyService.postParty(partyBody);
-
-				System.out.print("Numero da conta: ");
-				int accountNumber = sc.nextInt();
-
-				System.out.print("Deposito inicial: ");
-				double firstDeposit = sc.nextDouble();
-				
-				double accountLimit = 0.00;
-				boolean hasLimit = false;
-				
-				if (accountType == AccountType.PAYMENTS) {
-					System.out.print("Deseja limite?: (s/n)");
-					char s = sc.next().charAt(0);
-					if (s == 's') {
-						System.out.print("Limite da conta: ");
-						accountLimit = sc.nextDouble();
-						hasLimit = true;
-					}
-		
-					
-				}
-
-				PostAccountBody postAccountBody = new PostAccountBody(accountNumber, accountService.getDefaultBranchNumber(), firstDeposit,
-						partyId, accountLimit, accountType, hasLimit);
 				
 				try {
+					System.out.println("Para o cadastro da conta por favor informe");
+
+					System.out.println("Tipo de conta: (1 para conta de pagamentos, 2 conta poupanca)");
+					AccountType accountType = AccountType.PAYMENTS;
+					
+					int accountTypeChoice = sc.nextInt();
+
+					boolean selectedAccount = false;
+
+					while (!selectedAccount) {
+
+						if (accountTypeChoice == 1) {
+							accountType = AccountType.PAYMENTS;
+							selectedAccount = true;
+						} else if (accountTypeChoice == 2) {
+							accountType = AccountType.SAVINGS;
+							selectedAccount = true;
+						} else {
+							System.out.println("Digite um dos valores mostrados na tela");
+							System.out.println("Tipo de conta: (1 para pagamentos, 2 conta poupanca)");
+							accountTypeChoice = sc.nextInt();
+						}
+
+					}
+
+					sc.nextLine();
+
+					System.out.print("Nome do titular da conta: ");
+					String clientName = sc.nextLine();
+					
+					System.out.print("Numero do CPF (apenas numeros): ");
+					String documentNumber = sc.next();
+					
+					PostPartyBody partyBody = new PostPartyBody(clientName, documentNumber);
+
+					int partyId = partyService.postParty(partyBody);
+
+					System.out.print("Numero da conta: ");
+					int accountNumber = sc.nextInt();
+
+					System.out.print("Deposito inicial: ");
+					double firstDeposit = sc.nextDouble();
+					
+					double accountLimit = 0.00;
+					boolean hasLimit = false;
+					
+					if (accountType == AccountType.PAYMENTS) {
+						System.out.print("Deseja limite?: (s/n)");
+						char s = sc.next().charAt(0);
+						
+						if (s == 's') {
+							System.out.print("Limite da conta: ");
+							accountLimit = sc.nextDouble();
+							hasLimit = true;
+						}
+						
+					}
+
+					PostAccountBody postAccountBody = new PostAccountBody(accountNumber, accountService.getDefaultBranchNumber(), firstDeposit,
+							partyId, accountLimit, accountType, hasLimit);
 					
 					accountService.postAccount(postAccountBody);
 					

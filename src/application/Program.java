@@ -100,14 +100,23 @@ public class Program {
 
 				PostAccountBody postAccountBody = new PostAccountBody(accountNumber, accountService.getDefaultBranchNumber(), firstDeposit,
 						partyId, accountLimit, accountType, hasLimit);
-
-				int accountId = accountService.postAccount(postAccountBody);
 				
-				System.out.println();
-				System.out.println("numero de conta gerado: " + accountNumber);
-				System.out.println("numero de agencia gerado: " + postAccountBody.getBranchNumber());
+				try {
+					
+					accountService.postAccount(postAccountBody);
+					
+					System.out.println();
+					System.out.println("numero de conta gerado: " + accountNumber);
+					System.out.println("numero de agencia gerado: " + postAccountBody.getBranchNumber());
 
-				UI.success();
+					UI.success();
+					
+				} catch (BusinessException e) {
+					
+					System.out.println(e.getMessage());
+					
+				}
+				
 
 				break;
 			case 2:
@@ -126,16 +135,10 @@ public class Program {
 					
 					Account accountToDeposit = accountService.getAccountByAccountAndBranchNumber(accountAndBranchNumber);
 					
-					System.out.print("Saldo atual: ");
-					System.out.println(String.format("%.2f", accountToDeposit.getAccountBalance()));
-					
 					System.out.print("Informe o valor a ser depositado: ");
 					double depositAmount = sc.nextDouble();
 
 					accountToDeposit.deposit(depositAmount);
-					
-					System.out.print("Novo saldo: ");
-					System.out.println(String.format("%.2f", accountToDeposit.getAccountBalance()));
 
 					UI.success();
 				} catch (BusinessException e) {

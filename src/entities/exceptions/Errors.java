@@ -11,7 +11,8 @@ public enum Errors {
 		TRANSACTION_NOT_FOUND(7, "Transacao nao encontrada"),
 		FORBIDDEN_DESTINATION_BANK(8, "No momento apenas sao permitidas transferencias internas entre contas"),
 		NO_PARTY_REGISTERED(9,"Nenhuma pessoa registrada"),
-		TRANSFER_TIME_LIMIT(10,"Valor nao permitido para esse horario");
+		TRANSFER_TIME_LIMIT(10,"Valor nao permitido para esse horario"),
+		ACCOUNT_ALREADY_EXISTS(11,"Ja existe conta com esse numero");
 	
 	
 	    private String errorMessage;

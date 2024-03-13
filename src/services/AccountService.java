@@ -38,11 +38,27 @@ public class AccountService implements AccountServiceInterface {
 			accountId = accounts.size() + 1;
 		}
 		
-		Account newAccount = accountsConstructorChoicer(body, accountId);
-		accounts.put(accountId, newAccount);
+		try {
+			
+			Account check = getAccountByAccountAndBranchNumber(body.getAccountNumber().toString()+body.getBranchNumber().toString());
+			
+			if (check instanceof Account) {
+				throw new BusinessException(Errors.ACCOUNT_ALREADY_EXISTS.getErrorMessage(),Errors.ACCOUNT_ALREADY_EXISTS.getErrorCode());
+			}
+		}
+		catch (BusinessException e) {
+			if (e.getErrorCode() == Errors.NO_ACCOUNT_REGISTERED.getErrorCode() || e.getErrorCode() == Errors.ACCOUNT_NOT_FOUND.getErrorCode()) {
+				Account newAccount = accountsConstructorChoicer(body, accountId);
+				accounts.put(accountId, newAccount);
+				
+				postRelatePartyToAccount(newAccount);
+				postRelateAccoundIdAndNumber(newAccount);
+			}
+			if (e.getErrorCode() == Errors.ACCOUNT_ALREADY_EXISTS.getErrorCode()) {
+				throw e;
+			}
+		}
 		
-		postRelatePartyToAccount(newAccount);
-		postRelateAccoundIdAndNumber(newAccount);
 		
 		return accountId;
 	}

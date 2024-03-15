@@ -1,6 +1,7 @@
 package services;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class TransactionService implements TransactionServiceInterface {
 	
 	private AccountService accountService;
 	
-	private final String writePath = ".//src//exportedTransactions//exportedTransactions.csv";
+	private final String writePath = "//exportedTransactions";
 	
 	
 	
@@ -102,8 +103,13 @@ public class TransactionService implements TransactionServiceInterface {
 	@Override
 	public void postExportTransactionHistory(int accountId) {
 		
+		String userDir = System.getProperty("user.dir");
 		
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(writePath))){
+		new File(userDir + writePath).mkdir();
+		
+		String writeCsv = userDir + writePath + "\\exportedTransactions.csv"; 
+		
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(writeCsv))){
 			List<Transaction> transactionsToExport = getAccountTransactions(accountId);
 			
 			String columnNames = "data,valor,conta destino,agencia destino,banco destino,tipo de transferencia";

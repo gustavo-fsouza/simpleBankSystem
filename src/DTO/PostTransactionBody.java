@@ -2,6 +2,7 @@ package DTO;
 
 import java.time.LocalDateTime;
 
+import entities.enums.OperationType;
 import entities.enums.TransactionType;
 
 public class PostTransactionBody {
@@ -12,10 +13,11 @@ public class PostTransactionBody {
 	private Integer destinationBranchNumber;
 	private Integer destinationBankNumber;
 	private TransactionType transactionType;
+	private OperationType operationType;
 	
 	public PostTransactionBody(Integer accountId, LocalDateTime transactionDateTime, Double amount,
 			Integer destinationAcountNumber, Integer destinationBranchNumber, Integer destinationBankNumber,
-			TransactionType transactionType) {
+			TransactionType transactionType, OperationType operationType) {
 		this.accountId = accountId;
 		this.transactionDateTime = transactionDateTime;
 		this.amount = amount;
@@ -23,6 +25,7 @@ public class PostTransactionBody {
 		this.destinationBranchNumber = destinationBranchNumber;
 		this.destinationBankNumber = destinationBankNumber;
 		this.transactionType = transactionType;
+		this.operationType = operationType;
 	}
 
 	public Integer getAccountId() {
@@ -51,6 +54,10 @@ public class PostTransactionBody {
 
 	public TransactionType getTransactionType() {
 		return transactionType;
+	}
+	
+	public OperationType getOperationType() {
+		return operationType;
 	}
 	
 	

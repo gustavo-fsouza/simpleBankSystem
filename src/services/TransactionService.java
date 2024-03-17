@@ -12,6 +12,7 @@ import java.util.Map;
 import DTO.PostTransactionBody;
 import entities.Transaction;
 import entities.enums.BankNumbers;
+import entities.enums.OperationType;
 import entities.enums.TransactionType;
 import entities.exceptions.BusinessException;
 import entities.exceptions.Errors;
@@ -68,14 +69,17 @@ public class TransactionService implements TransactionServiceInterface {
 		
 		Transaction newTransaction = new Transaction(transactionId, body.getAccountId(), body.getTransactionDateTime(),
 				body.getAmount(), body.getDestinationAcountNumber(), body.getDestinationBranchNumber(),
-				body.getTransactionType());
+				body.getTransactionType(), body.getOperationType());
 		
 		transactions.put(transactionId, newTransaction);
 
 		postRelateTransactionToAccount(newTransaction);
 		
-		if (body.getTransactionType() == TransactionType.INTERNAL_TRANSFER) {
-			accountService.getAccount(body.getAccountId()).withdraw(body.getAmount());;
+		if (body.getTransactionType() == TransactionType.INTERNAL_TRANSFER && body.getOperationType() == OperationType.CASH_OUT) {
+			accountService.getAccount(body.getAccountId()).withdraw(body.getAmount());
+		}
+		else if (body.getTransactionType() == TransactionType.INTERNAL_TRANSFER && body.getOperationType() == OperationType.CASH_IN) {
+			accountService.getAccount(body.getAccountId()).deposit(body.getAmount());
 		}
 
 		return transactionId;

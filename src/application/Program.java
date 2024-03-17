@@ -11,6 +11,7 @@ import DTO.PostTransactionBody;
 import entities.Account;
 import entities.enums.AccountType;
 import entities.enums.BankNumbers;
+import entities.enums.OperationType;
 import entities.enums.TransactionType;
 import entities.exceptions.BusinessException;
 import services.AccountService;
@@ -244,14 +245,22 @@ public class Program {
 							LocalDateTime transactionDateTime = LocalDateTime.now();
 							
 							System.out.print("Informe o numero da conta destino: ");
-							int destinationAccountNumber = sc.nextInt();
+							Integer destinationAccountNumber = sc.nextInt();
 							
 							System.out.print("Informe o numero da agencia da conta destino: ");
-							int destinationBranchNumber	= sc.nextInt();
+							Integer destinationBranchNumber	= sc.nextInt();
 							
-							PostTransactionBody transactionBody = new PostTransactionBody(accountToTransferFrom.getAccountId(), transactionDateTime, transferAmount, destinationAccountNumber, destinationBranchNumber, BankNumbers.DEFAULT_BANK_NUMBER.getBankNumber(), TransactionType.INTERNAL_TRANSFER);
+							String dAccountAndBranchNumber = destinationAccountNumber.toString() + destinationBranchNumber.toString();
 							
-							transactionService.postTransaction(transactionBody);
+							Account accountToTransferTo = accountService.getAccountByAccountAndBranchNumber(dAccountAndBranchNumber);
+							
+							PostTransactionBody transactionBodyFrom = new PostTransactionBody(accountToTransferFrom.getAccountId(), transactionDateTime, transferAmount, destinationAccountNumber, destinationBranchNumber, BankNumbers.DEFAULT_BANK_NUMBER.getBankNumber(), TransactionType.INTERNAL_TRANSFER, OperationType.CASH_OUT);
+							
+							transactionService.postTransaction(transactionBodyFrom);
+							
+							PostTransactionBody transactionBodyTo = new PostTransactionBody(accountToTransferTo.getAccountId(), transactionDateTime, transferAmount, destinationAccountNumber, destinationBranchNumber, BankNumbers.DEFAULT_BANK_NUMBER.getBankNumber(), TransactionType.INTERNAL_TRANSFER, OperationType.CASH_IN);
+							
+							transactionService.postTransaction(transactionBodyTo);
 							
 							System.out.print("Saldo atual da conta: ");
 							System.out.println(String.format("%.2f", accountToTransferFrom.getAccountBalance()));

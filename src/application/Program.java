@@ -14,6 +14,7 @@ import entities.enums.BankNumbers;
 import entities.enums.OperationType;
 import entities.enums.TransactionType;
 import entities.exceptions.BusinessException;
+import entities.exceptions.Errors;
 import services.AccountService;
 import services.PartyService;
 import services.TransactionService;
@@ -84,8 +85,21 @@ public class Program {
 						String documentNumber = sc.next();
 						
 						PostPartyBody partyBody = new PostPartyBody(clientName, documentNumber);
-	
-						int partyId = partyService.postParty(partyBody);
+						
+						int partyId = 0;
+						
+						try {
+							partyId = partyService.postParty(partyBody);
+							
+						}catch(BusinessException e) {
+							
+							if(e.getErrorCode() == Errors.PARTY_ALREADY_EXISTS.getErrorCode()) {
+								partyId = partyService.getPartyByDocument(documentNumber).getPartyId();
+							}
+							else {
+								throw e;
+							}
+						}
 	
 						System.out.print("Numero da conta: ");
 						int accountNumber = sc.nextInt();

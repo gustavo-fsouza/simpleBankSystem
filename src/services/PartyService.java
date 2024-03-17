@@ -11,6 +11,7 @@ import entities.exceptions.Errors;
 public class PartyService implements PartyServiceInterface {
 
 	private Map<Integer, Party> parties = new HashMap<Integer, Party>();
+	private Map<String, Party> partyByDoc = new HashMap<String, Party>();
 
 	@Override
 	public Party getParty(Integer partyId) {
@@ -28,13 +29,61 @@ public class PartyService implements PartyServiceInterface {
 			partyId = parties.size() + 1;
 		}
 		
-		
-		Party newParty = new Party(body.getName(), partyId, body.getDocumentNumber());
-		parties.put(partyId, newParty);
-		return partyId;
+		if(partyExists(body.getDocumentNumber())) {
+			
+			throw new BusinessException(Errors.PARTY_ALREADY_EXISTS.getErrorMessage(),
+					Errors.PARTY_ALREADY_EXISTS.getErrorCode());
+			
+		} else {
+			Party newParty = new Party(body.getName(), partyId, body.getDocumentNumber());
+			parties.put(partyId, newParty);
+			
+			relatePartyAndDocument(newParty);
+			
+			return partyId;
+		}		
 	}
 	
-	public static boolean isCPF(String CPF) {
+	@Override
+	public Party getPartyByDocument(String documentNumber) {
+		if(!isCPF(documentNumber)) {
+			throw new BusinessException(Errors.INVALID_DOCUMENT.getErrorMessage(),Errors.INVALID_DOCUMENT.getErrorCode());
+		}
+		if (partyByDoc.isEmpty()) {
+			throw new BusinessException(Errors.NO_PARTY_REGISTERED.getErrorMessage(),
+					Errors.NO_PARTY_REGISTERED.getErrorCode());
+			
+		}
+		if (!partyByDoc.containsKey(documentNumber)) {
+			
+			throw new BusinessException(Errors.NO_PARTY_REGISTERED.getErrorMessage(),
+					Errors.NO_PARTY_REGISTERED.getErrorCode());
+			
+		}
+		return partyByDoc.get(documentNumber);
+	}
+	
+	private void relatePartyAndDocument(Party newParty) {
+		partyByDoc.put(newParty.getDocumentNumber(), newParty);
+	}
+	
+	private boolean partyExists(String documentNumber) {
+		try {
+		
+			getPartyByDocument(documentNumber);
+		
+			return true;
+		}
+		catch (BusinessException e) {
+			if(e.getErrorCode() == Errors.NO_PARTY_REGISTERED.getErrorCode()) {
+				return false;
+			} else {
+				throw e;
+			}
+		}
+	}
+	
+	private static boolean isCPF(String CPF) {
 
         if (CPF.equals("00000000000") ||
             CPF.equals("11111111111") ||
@@ -80,5 +129,7 @@ public class PartyService implements PartyServiceInterface {
         else return(false);
                
         }
+
+	
 
 }

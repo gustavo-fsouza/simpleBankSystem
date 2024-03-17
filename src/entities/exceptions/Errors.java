@@ -13,7 +13,9 @@ public enum Errors {
 		NO_PARTY_REGISTERED(9,"Nenhuma pessoa registrada"),
 		TRANSFER_TIME_LIMIT(10,"Valor nao permitido para esse horario"),
 		ACCOUNT_ALREADY_EXISTS(11,"Ja existe conta com esse numero"),
-		INVALID_DOCUMENT(12, "Documento invalido");
+		INVALID_DOCUMENT(12, "Documento invalido"),
+		PARTY_ALREADY_EXISTS(13,"Usuario ja cadastrado");
+	
 	
 	
 	    private String errorMessage;

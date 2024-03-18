@@ -18,4 +18,7 @@ Future possibly improvements:
 5. Include specific input validation for data like phone, email etc.
 
 Bellow is the UML diagram for this system:
-![Alt text](src/uml/uml.svg?raw=true "UML Diagram")
+![Alt text](src/diagrams/uml.svg?raw=true "UML Diagram")
+
+Bellow is the sequence diagram for this system:
+![Alt text](src/diagrams/sequenceDiagram.svg?raw=true "Sequence Diagram")

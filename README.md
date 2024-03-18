@@ -15,6 +15,7 @@ Future possibly improvements:
 2. Change the menu schema to work with a state machine instead of using switch/case
 3. Include other types of transactions
 4. Include other party data like addresses, or more phone numbers etc.
+5. Include specific input validation for data like phone, email etc.
 
 Bellow is the UML diagram for this system:
 ![Alt text](src/uml/uml.svg?raw=true "UML Diagram")

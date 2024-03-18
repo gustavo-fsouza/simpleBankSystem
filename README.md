@@ -14,7 +14,7 @@ Future possibly improvements:
 1. Possibility for the user to select the amount limit and time for transfers
 2. Change the menu schema to work with a state machine instead of using switch/case
 3. Include other types of transactions
-4. Include other party data like addresses, phone numbers etc.
+4. Include other party data like addresses, or more phone numbers etc.
 
 Bellow is the UML diagram for this system:
 ![Alt text](src/uml/uml.svg?raw=true "UML Diagram")

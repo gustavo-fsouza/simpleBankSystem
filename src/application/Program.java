@@ -84,7 +84,13 @@ public class Program {
 						System.out.print("Numero do CPF (apenas numeros): ");
 						String documentNumber = sc.next();
 						
-						PostPartyBody partyBody = new PostPartyBody(clientName, documentNumber);
+						System.out.print("Endereco de email: ");
+						String emailAddress = sc.next();
+						
+						System.out.print("Numero de celular: ");
+						String phoneNumber = sc.next();
+						
+						PostPartyBody partyBody = new PostPartyBody(clientName, documentNumber, emailAddress, phoneNumber);
 						
 						int partyId = 0;
 						

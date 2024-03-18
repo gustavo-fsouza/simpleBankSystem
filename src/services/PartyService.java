@@ -35,7 +35,7 @@ public class PartyService implements PartyServiceInterface {
 					Errors.PARTY_ALREADY_EXISTS.getErrorCode());
 			
 		} else {
-			Party newParty = new Party(body.getName(), partyId, body.getDocumentNumber());
+			Party newParty = new Party(body.getName(), partyId, body.getDocumentNumber(), body.getEmailAddress(), body.getPhoneNumber());
 			parties.put(partyId, newParty);
 			
 			relatePartyAndDocument(newParty);
